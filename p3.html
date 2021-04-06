@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: rgb(236, 240, 241);
+        }
+        
+        #search {
+            width: 400px;
+            height: 50px;
+            margin: auto;
+            margin-top: 50px;
+        }
+        
+        input {
+            width: 80%;
+            height: 80%;
+            border-radius: 10px;
+            padding-left: 15px;
+            box-shadow: -3px -3px 5px rgb(5, 167, 236), 3px 3px 15px rgb(1, 41, 58);
+            outline: none;
+            border: none;
+        }
+        
+        button {
+            width: 18%;
+            height: 80%;
+            border-radius: 10px;
+            box-shadow: -3px -3px 5px rgb(5, 167, 236), 3px 3px 15px rgb(1, 41, 58);
+            outline: none;
+            border: none;
+        }
+        
+        #container {
+            width: 400px;
+            height: 300px;
+            margin: auto;
+            border-radius: 25px;
+            margin-top: 50px;
+            background-color: black;
+            box-shadow: -3px -3px 5px rgb(23, 24, 24), 3px 3px 15px rgb(12, 12, 12);
+            text-align: left;
+            color: white;
+        }
+        
+        #display {
+            width: 100%;
+            height: 300px;
+            border-radius: 25px;
+            padding-left: 100px;
+            padding-top: 30px;
+        }
+        
+        #display>p {
+            letter-spacing: 1px;
+            line-height: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="search">
+        <input type="text" placeholder="Enter city name" id="cityName">
+        <button onclick="getData()">Search</button>
+    </div>
+    <div id="container">
+        <div id="display"></div>
+    </div>
+
+    <script>
+        async function getData() {
+            var div = document.getElementById('display')
+            div.textContent = null
+
+
+            var apiKey = 'c53542d7bc35506322f6660aef1d027d'
+
+
+
+            var city_name = document.getElementById('cityName').value
+            var result = city_name.substr(0, 1).toUpperCase() + city_name.substr(1).toLowerCase();
+            console.log(result)
+
+            try {
+                var response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${result}&appid=${apiKey}`)
+
+                var alldata = await response.json();
+                console.log(alldata)
+
+                var {
+                    wind: {
+                        speed
+                    },
+                    main: {
+                        temp
+                    },
+                    sys: {
+                        sunset,
+                        sunrise
+                    },
+                    weather: [{
+                        description
+                    }]
+                } = alldata
+                console.log(description, sunrise, sunset, speed, temp)
+                var temp = Math.floor(temp - (273.15)) + "°C"
+
+                var p = document.createElement('p')
+                p.innerHTML = `Description: ${description} <br> Sunrise: ${sunrise} <br> Sunset: ${sunset} <br>Wind Speed: ${(0.51)*speed}m/sec <br> Temperature: ${temp}`
+                div.append(p)
+            } catch (e) {
+                console.log(e)
+            }
+
+
+        }
+    </script>
+</body>
+
+</html>
